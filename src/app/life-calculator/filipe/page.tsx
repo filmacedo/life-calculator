@@ -100,7 +100,7 @@ export default function FilipePage() {
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <a
             href="/life-calculator"
-            className="px-8 py-3 bg-foreground text-background rounded-lg text-base hover:opacity-90 transition-opacity"
+            className="px-8 py-3 bg-foreground text-background border border-foreground rounded-lg text-base hover:opacity-90 transition-opacity"
           >
             Try it yourself
           </a>
