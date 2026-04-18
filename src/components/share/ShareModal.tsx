@@ -20,9 +20,12 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
       return null;
     }
   })();
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
   const ogImageUrl = encoded
-    ? `/life-calculator/og?s=${encoded}`
-    : `/life-calculator/og`;
+    ? `${origin}/life-calculator/og?s=${encoded}`
+    : `${origin}/life-calculator/og`;
+
+  const [imgError, setImgError] = useState(false);
 
   // Close on Escape
   useEffect(() => {
@@ -93,12 +96,19 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
 
         {/* OG image preview */}
         <div className="px-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={ogImageUrl}
-            alt="Your life calculator result"
-            className="w-full rounded-xl border border-border"
-          />
+          {imgError ? (
+            <div className="w-full aspect-[1200/630] rounded-xl border border-border bg-muted/20 flex items-center justify-center text-sm text-muted">
+              Preview unavailable
+            </div>
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={ogImageUrl}
+              alt="Your life calculator result"
+              className="w-full rounded-xl border border-border"
+              onError={() => setImgError(true)}
+            />
+          )}
         </div>
 
         {/* Actions */}
