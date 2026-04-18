@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Context7__resolve-library-id",
+      "Bash(npx create-next-app@latest *)",
+      "Bash(rm /Users/macedo/Repos/macedo/life-calculator/.tool-versions)",
+      "Read(//private/tmp/**)",
+      "Bash(pnpm --version)",
+      "Bash(pnpm create *)",
+      "Skill(update-config)",
+      "Bash(cp *)",
+      "Bash(rm -rf node_modules pnpm-lock.yaml pnpm-workspace.yaml)",
+      "Bash(echo \"nodejs 22.21.1\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:3000/life-calculator)",
+      "Bash(curl -s http://localhost:3000/life-calculator/filipe)",
+      "Bash(curl -s http://localhost:3000/life-calculator/methodology)",
+      "Bash(node *)",
+      "Bash(npx tsx *)",
+      "Bash(git init *)"
+    ]
+  }
+}
