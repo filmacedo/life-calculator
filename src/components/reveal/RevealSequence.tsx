@@ -10,7 +10,7 @@ import { MonthsGrid } from "./MonthsGrid";
 import { StagesBar } from "./StagesBar";
 import { BiggestLever } from "./BiggestLever";
 import { ViralStats } from "./ViralStats";
-import { ShareBar } from "@/components/share/ShareBar";
+import { ShareButton } from "@/components/share/ShareButton";
 
 interface RevealSequenceProps {
   result: CalculatorResult;
@@ -79,11 +79,12 @@ export function RevealSequence({ result, age, onPlay, shareUrl }: RevealSequence
       </FadeIn>
 
       <FadeIn delay={2.4}>
-        <ShareBar url={shareUrl} percentLived={result.percentLived} />
-      </FadeIn>
-
-      <FadeIn delay={2.8}>
-        <div className="text-center">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
+          <ShareButton
+            url={shareUrl}
+            percentLived={result.percentLived}
+            className="px-8 py-3 bg-foreground text-background border border-foreground rounded-lg text-base hover:opacity-90 transition-opacity"
+          />
           <button
             onClick={onPlay}
             className="px-8 py-3 border border-foreground rounded-lg text-base hover:bg-foreground hover:text-background transition-colors"

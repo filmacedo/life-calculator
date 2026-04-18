@@ -7,31 +7,38 @@ interface MonthsGridProps {
   totalMonths: number; // expected * 12
 }
 
+type Dot = { index: number; state: "filled" | "current" | "outlined" };
+
 export function MonthsGrid({ ageMonths, totalMonths }: MonthsGridProps) {
   const totalYears = Math.ceil(totalMonths / 12);
-  const halfPoint = Math.ceil(totalYears / 2);
 
-  const dots = useMemo(() => {
-    const result: Array<{ index: number; state: "filled" | "current" | "outlined" }> = [];
+  const dots = useMemo<Dot[]>(() => {
+    const result: Dot[] = [];
     for (let i = 0; i < totalYears * 12; i++) {
-      let state: "filled" | "current" | "outlined";
+      let state: Dot["state"];
       if (i < ageMonths) state = "filled";
       else if (i === ageMonths) state = "current";
       else state = "outlined";
       result.push({ index: i, state });
     }
     return result;
-  }, [ageMonths, totalMonths, totalYears]);
+  }, [ageMonths, totalYears]);
 
-  const leftDots = dots.filter((d) => Math.floor(d.index / 12) < halfPoint);
-  const rightDots = dots.filter((d) => Math.floor(d.index / 12) >= halfPoint);
+  const mobileColumns = splitYearsIntoColumns(totalYears, 2);
+  const desktopColumns = splitYearsIntoColumns(totalYears, 4);
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-6 md:gap-10 justify-center">
-        <DotColumn dots={leftDots} startYear={0} />
-        <DotColumn dots={rightDots} startYear={halfPoint} />
+      {/* Mobile: 2 columns */}
+      <div className="md:hidden flex gap-6 justify-center">
+        {renderColumns(dots, mobileColumns)}
       </div>
+
+      {/* Desktop: 4 columns */}
+      <div className="hidden md:flex gap-8 justify-center">
+        {renderColumns(dots, desktopColumns)}
+      </div>
+
       <div className="flex justify-center gap-6 text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-dot-filled" /> lived
@@ -48,14 +55,42 @@ export function MonthsGrid({ ageMonths, totalMonths }: MonthsGridProps) {
   );
 }
 
+function splitYearsIntoColumns(totalYears: number, numCols: number): number[] {
+  const perCol = Math.ceil(totalYears / numCols);
+  const result: number[] = [];
+  let remaining = totalYears;
+  for (let i = 0; i < numCols; i++) {
+    const size = Math.min(perCol, Math.max(remaining, 0));
+    result.push(size);
+    remaining -= size;
+  }
+  return result;
+}
+
+function renderColumns(dots: Dot[], columnSizes: number[]) {
+  let yearCursor = 0;
+  return columnSizes.map((yearCount, colIdx) => {
+    const startYear = yearCursor;
+    const colDots = dots.slice(startYear * 12, (startYear + yearCount) * 12);
+    yearCursor += yearCount;
+    return (
+      <DotColumn
+        key={colIdx}
+        dots={colDots}
+        startYear={startYear}
+      />
+    );
+  });
+}
+
 function DotColumn({
   dots,
   startYear,
 }: {
-  dots: Array<{ index: number; state: "filled" | "current" | "outlined" }>;
+  dots: Dot[];
   startYear: number;
 }) {
-  const rows: Array<typeof dots> = [];
+  const rows: Dot[][] = [];
   for (let i = 0; i < dots.length; i += 12) {
     rows.push(dots.slice(i, i + 12));
   }

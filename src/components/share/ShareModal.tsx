@@ -17,6 +17,8 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
   const [copied, setCopied]       = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [imgError, setImgError]   = useState(false);
+  const [igBusy, setIgBusy]       = useState(false);
+  const [igHint, setIgHint]       = useState<string | null>(null);
 
   const encoded = (() => {
     try { return new URL(url).searchParams.get("s"); } catch { return null; }
@@ -58,6 +60,43 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [url, percentLived]);
+
+  const handleInstagramShare = useCallback(async () => {
+    setIgBusy(true);
+    setIgHint(null);
+    try {
+      const res = await fetch(ogImageUrl);
+      const blob = await res.blob();
+      const file = new File([blob], `life-calculator-story-${theme}.png`, { type: "image/png" });
+
+      // Web Share API with file — mobile native share sheet (Instagram will appear)
+      const canShareFile =
+        typeof navigator !== "undefined" &&
+        typeof navigator.canShare === "function" &&
+        navigator.canShare({ files: [file] });
+
+      if (canShareFile) {
+        try {
+          await navigator.share({ files: [file] });
+          return;
+        } catch (err) {
+          // User cancelled or share errored — fall through to download
+          if (err instanceof DOMException && err.name === "AbortError") return;
+        }
+      }
+
+      // Desktop fallback: download the image and show instructions
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = file.name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      setIgHint("Image saved — upload it to your Instagram story.");
+      setTimeout(() => setIgHint(null), 4500);
+    } finally {
+      setIgBusy(false);
+    }
+  }, [ogImageUrl, theme]);
 
   const handleDownload = useCallback(async () => {
     setDownloading(true);
@@ -168,6 +207,27 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
               </svg>
               Share on X
             </a>
+          )}
+
+          {/* Instagram — story only */}
+          {format === "story" && (
+            <>
+              <button
+                onClick={handleInstagramShare}
+                disabled={igBusy}
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-foreground text-background rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+                {igBusy ? "Preparing…" : "Share to Instagram"}
+              </button>
+              {igHint && (
+                <p className="text-xs text-muted text-center -mt-1">{igHint}</p>
+              )}
+            </>
           )}
 
           {/* Copy link */}

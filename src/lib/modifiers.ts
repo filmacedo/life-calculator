@@ -13,10 +13,7 @@ export function computeModifiers(answers: UserAnswers): ModifierResult[] {
       key: "whoopAge",
       label: "Biological age (Whoop)",
       deltaYears: delta,
-      summary:
-        delta >= 0
-          ? `Body is ${Math.abs(answers.age - answers.whoopAge).toFixed(1)} years younger`
-          : `Body is ${Math.abs(answers.age - answers.whoopAge).toFixed(1)} years older`,
+      summary: `${answers.whoopAge.toFixed(1)} years old`,
     });
   }
 

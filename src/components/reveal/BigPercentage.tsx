@@ -27,19 +27,15 @@ export function BigPercentage({ percent, expected, animated = true }: BigPercent
   }, [percent, animated, count]);
 
   return (
-    <div className="text-center">
-      <p className="text-5xl md:text-7xl font-serif tracking-tight">
-        {Math.round(expected)}
-      </p>
-      <p className="mt-1 text-lg text-muted">
-        years expected
-      </p>
-      <motion.p className="mt-4 text-3xl md:text-4xl font-serif text-muted/80">
-        {display}
-      </motion.p>
-      <p className="mt-1 text-sm text-muted">
-        life completed
-      </p>
+    <div className="grid grid-cols-2 gap-6">
+      <div>
+        <p className="text-5xl md:text-6xl font-serif">{Math.round(expected)}</p>
+        <p className="text-sm text-muted mt-1">years expected</p>
+      </div>
+      <div>
+        <motion.p className="text-5xl md:text-6xl font-serif">{display}</motion.p>
+        <p className="text-sm text-muted mt-1">life completed</p>
+      </div>
     </div>
   );
 }

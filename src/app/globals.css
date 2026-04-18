@@ -20,7 +20,7 @@
   --color-dot-outlined: var(--dot-outlined);
   --color-dot-filled: var(--dot-filled);
   --color-border: var(--border);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-instrument-sans);
   --font-serif: var(--font-instrument-serif);
 }
 
