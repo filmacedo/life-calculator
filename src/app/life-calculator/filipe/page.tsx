@@ -53,7 +53,9 @@ export default function FilipePage() {
           <p className="text-muted leading-relaxed">
             The essay that started it:{" "}
             <a
-              href="#"
+              href="https://noticedso.substack.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="italic underline hover:text-foreground"
             >
               Forty? Still Early.
