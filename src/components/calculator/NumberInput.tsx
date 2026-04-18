@@ -45,10 +45,11 @@ export function NumberInput({
         placeholder={placeholder ?? String(min)}
         onChange={(e) => {
           const raw = e.target.value;
-          // Allow typing freely (digits and decimal point)
-          if (raw === "" || /^[\d.]*$/.test(raw)) {
+          // Accept digits, dots, and commas (comma = decimal on some locales/keyboards)
+          if (raw === "" || /^[\d.,]*$/.test(raw)) {
             setText(raw);
-            const v = step && step < 1 ? parseFloat(raw) : parseInt(raw, 10);
+            const normalized = raw.replace(",", ".");
+            const v = step && step < 1 ? parseFloat(normalized) : parseInt(normalized, 10);
             if (!isNaN(v) && v >= min && v <= max) {
               onChange(v);
             }
@@ -56,7 +57,8 @@ export function NumberInput({
         }}
         onBlur={() => {
           // Clamp and format on blur
-          const v = step && step < 1 ? parseFloat(text) : parseInt(text, 10);
+          const normalized = text.replace(",", ".");
+          const v = step && step < 1 ? parseFloat(normalized) : parseInt(normalized, 10);
           if (!isNaN(v)) {
             const clamped = Math.min(max, Math.max(min, v));
             setText(step && step < 1 ? clamped.toFixed(1) : String(clamped));

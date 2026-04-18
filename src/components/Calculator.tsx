@@ -71,7 +71,7 @@ export function Calculator({ initialParam }: CalculatorProps) {
   if (phase === "reveal" && result && answers) {
     return (
       <Container>
-        <RevealSequence result={result} age={answers.age} onPlay={goToPlay} />
+        <RevealSequence result={result} age={answers.age} onPlay={goToPlay} shareUrl={shareUrl} />
       </Container>
     );
   }

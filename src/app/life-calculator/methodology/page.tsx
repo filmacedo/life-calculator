@@ -168,7 +168,7 @@ export default function MethodologyPage() {
             href="/life-calculator/filipe"
             className="underline hover:text-foreground"
           >
-            See how the creator scored
+            See how Filipe scored
           </a>
         </footer>
       </article>

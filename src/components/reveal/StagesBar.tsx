@@ -16,33 +16,9 @@ export function StagesBar({ age }: StagesBarProps) {
   const markerPercent = Math.min(100, Math.max(0, age));
 
   return (
-    <div className="space-y-2">
-      <div className="relative">
-        {/* Bar */}
-        <div className="flex h-8 rounded-full overflow-hidden">
-          {stages.map((stage) => (
-            <div
-              key={stage.label}
-              className={`${stage.color} relative`}
-              style={{ width: `${stage.end - stage.start}%` }}
-            />
-          ))}
-        </div>
-
-        {/* Marker */}
-        <div
-          className="absolute top-0 bottom-0 flex flex-col items-center pointer-events-none"
-          style={{ left: `${markerPercent}%` }}
-        >
-          <div className="w-0.5 h-full bg-foreground" />
-          <div className="absolute -bottom-5 text-xs font-medium text-foreground whitespace-nowrap">
-            you ({age})
-          </div>
-        </div>
-      </div>
-
-      {/* Labels */}
-      <div className="flex text-[10px] text-muted mt-6">
+    <div className="space-y-1">
+      {/* Labels above the bar */}
+      <div className="flex text-[10px] text-muted">
         {stages.map((stage) => (
           <div
             key={stage.label}
@@ -52,6 +28,35 @@ export function StagesBar({ age }: StagesBarProps) {
             {stage.label}
           </div>
         ))}
+      </div>
+
+      {/* Bar */}
+      <div className="relative">
+        <div className="flex h-8 rounded-full overflow-hidden">
+          {stages.map((stage) => (
+            <div
+              key={stage.label}
+              className={stage.color}
+              style={{ width: `${stage.end - stage.start}%` }}
+            />
+          ))}
+        </div>
+
+        {/* Marker line */}
+        <div
+          className="absolute top-0 bottom-0 w-0.5 bg-foreground pointer-events-none"
+          style={{ left: `${markerPercent}%` }}
+        />
+      </div>
+
+      {/* "you" label below the bar, centred on marker */}
+      <div className="relative h-5">
+        <div
+          className="absolute top-1 text-xs font-medium text-foreground whitespace-nowrap -translate-x-1/2"
+          style={{ left: `${markerPercent}%` }}
+        >
+          you ({age})
+        </div>
       </div>
     </div>
   );

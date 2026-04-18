@@ -1,33 +1,59 @@
 "use client";
 
+import { useRef, useState, useEffect } from "react";
 import { CalculatorResult } from "@/lib/types";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { StickyResultsBanner } from "@/components/ui/StickyResultsBanner";
 import { BigPercentage } from "./BigPercentage";
 import { YearsLeftSubtitle } from "./YearsLeftSubtitle";
 import { MonthsGrid } from "./MonthsGrid";
 import { StagesBar } from "./StagesBar";
 import { BiggestLever } from "./BiggestLever";
 import { ViralStats } from "./ViralStats";
+import { ShareBar } from "@/components/share/ShareBar";
 
 interface RevealSequenceProps {
   result: CalculatorResult;
   age: number;
   onPlay: () => void;
+  shareUrl: string;
 }
 
-export function RevealSequence({ result, age, onPlay }: RevealSequenceProps) {
+export function RevealSequence({ result, age, onPlay, shareUrl }: RevealSequenceProps) {
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [showBanner, setShowBanner] = useState(false);
+
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowBanner(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="py-20 space-y-16">
-      <FadeIn delay={0}>
-        <BigPercentage
-          percent={result.percentLived}
-          expected={result.expected}
-        />
-      </FadeIn>
+      <StickyResultsBanner
+        expected={result.expected}
+        percentLived={result.percentLived}
+        visible={showBanner}
+      />
 
-      <FadeIn delay={0.4}>
-        <YearsLeftSubtitle yearsLeft={result.yearsLeft} age={age} />
-      </FadeIn>
+      <div ref={statsRef}>
+        <FadeIn delay={0}>
+          <BigPercentage
+            percent={result.percentLived}
+            expected={result.expected}
+          />
+        </FadeIn>
+
+        <FadeIn delay={0.4}>
+          <YearsLeftSubtitle yearsLeft={result.yearsLeft} age={age} />
+        </FadeIn>
+      </div>
 
       <FadeIn delay={0.8}>
         <MonthsGrid
@@ -53,6 +79,10 @@ export function RevealSequence({ result, age, onPlay }: RevealSequenceProps) {
       </FadeIn>
 
       <FadeIn delay={2.4}>
+        <ShareBar url={shareUrl} percentLived={result.percentLived} />
+      </FadeIn>
+
+      <FadeIn delay={2.8}>
         <div className="text-center">
           <button
             onClick={onPlay}

@@ -1,11 +1,15 @@
 "use client";
 
-import { UserAnswers, CalculatorResult, SmokingStatus } from "@/lib/types";
+import { useRef, useState, useEffect } from "react";
+import { UserAnswers, CalculatorResult } from "@/lib/types";
 import { MonthsGrid } from "@/components/reveal/MonthsGrid";
 import { StagesBar } from "@/components/reveal/StagesBar";
 import { BiggestLever } from "@/components/reveal/BiggestLever";
 import { ViralStats } from "@/components/reveal/ViralStats";
 import { ShareBar } from "@/components/share/ShareBar";
+import { BigPercentage } from "@/components/reveal/BigPercentage";
+import { YearsLeftSubtitle } from "@/components/reveal/YearsLeftSubtitle";
+import { StickyResultsBanner } from "@/components/ui/StickyResultsBanner";
 import { ModifierSlider } from "./ModifierSlider";
 
 interface PlayModeProps {
@@ -53,6 +57,20 @@ export function PlayMode({
   onAnswerChange,
   shareUrl,
 }: PlayModeProps) {
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [showBanner, setShowBanner] = useState(false);
+
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowBanner(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const bioConfigs = answers.whoopEnabled
     ? [whoopConfig]
     : [exerciseConfig, sleepConfig];
@@ -68,21 +86,25 @@ export function PlayMode({
 
   return (
     <div>
-      {/* Sticky header */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border py-3 -mx-6 px-6">
-        <div className="flex items-baseline justify-between max-w-2xl mx-auto">
-          <div className="flex items-baseline gap-3">
-            <span className="text-2xl font-serif">{Math.round(result.expected)}</span>
-            <span className="text-sm text-muted">years expected</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg font-serif text-muted/80">{result.percentLived}%</span>
-            <span className="text-xs text-muted">lived</span>
-          </div>
-        </div>
-      </div>
+      <StickyResultsBanner
+        expected={result.expected}
+        percentLived={result.percentLived}
+        visible={showBanner}
+      />
 
       <div className="py-12 space-y-12">
+        {/* Main stats — same weight as reveal */}
+        <div ref={statsRef}>
+          <BigPercentage
+            percent={result.percentLived}
+            expected={result.expected}
+            animated={false}
+          />
+          <div className="mt-6">
+            <YearsLeftSubtitle yearsLeft={result.yearsLeft} age={answers.age} />
+          </div>
+        </div>
+
         <MonthsGrid
           ageMonths={Math.floor(answers.age * 12)}
           totalMonths={Math.round(result.expected * 12)}
