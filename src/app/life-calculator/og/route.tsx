@@ -33,12 +33,12 @@ export async function GET(request: NextRequest) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#fafaf7",
+          backgroundColor: "#F7F5F2",
           padding: "60px",
           position: "relative",
         }}
       >
-        <div style={{ fontSize: hasData ? 160 : 72, color: "#1a1a1a", lineHeight: 1, fontFamily: "Georgia, serif" }}>
+        <div style={{ fontSize: hasData ? 160 : 72, color: "#1a1816", lineHeight: 1, fontFamily: "Georgia, serif" }}>
           {hasData ? `${percent}%` : "How Much Life Left?"}
         </div>
         {hasData && (
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
         )}
         {hasData && (
           <div style={{ display: "flex", width: 1080, height: 10, marginTop: 52, backgroundColor: "#e4e4e0", borderRadius: 5 }}>
-            <div style={{ width: `${percent}%`, height: 10, backgroundColor: "#1a1a1a", borderRadius: 5 }} />
+            <div style={{ width: `${percent}%`, height: 10, backgroundColor: "#1a1816", borderRadius: 5 }} />
           </div>
         )}
         {hasData && (
