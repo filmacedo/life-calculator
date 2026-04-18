@@ -8,24 +8,31 @@ interface ShareModalProps {
   onClose: () => void;
 }
 
+type Format = "feed" | "story";
+type Theme  = "light" | "dark";
+
 export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
-  const [copied, setCopied] = useState(false);
+  const [format, setFormat]       = useState<Format>("feed");
+  const [theme, setTheme]         = useState<Theme>("light");
+  const [copied, setCopied]       = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [imgError, setImgError]   = useState(false);
 
-  // Extract the encoded param from the share URL to build OG image URL
   const encoded = (() => {
-    try {
-      return new URL(url).searchParams.get("s");
-    } catch {
-      return null;
-    }
+    try { return new URL(url).searchParams.get("s"); } catch { return null; }
   })();
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
-  const ogImageUrl = encoded
-    ? `${origin}/life-calculator/og?s=${encoded}`
-    : `${origin}/life-calculator/og`;
 
-  const [imgError, setImgError] = useState(false);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+  const ogImageUrl = (() => {
+    const base = encoded
+      ? `${origin}/life-calculator/og?s=${encoded}`
+      : `${origin}/life-calculator/og`;
+    return `${base}&theme=${theme}&format=${format}`;
+  })();
+
+  // Reset image error when options change
+  useEffect(() => { setImgError(false); }, [theme, format]);
 
   // Close on Escape
   useEffect(() => {
@@ -39,7 +46,6 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
     try {
       await navigator.clipboard.writeText(text);
     } catch {
-      // fallback
       const ta = document.createElement("textarea");
       ta.value = text;
       ta.style.position = "fixed";
@@ -60,27 +66,26 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
       const blob = await res.blob();
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "life-calculator.png";
+      a.download = `life-calculator-${format}-${theme}.png`;
       a.click();
       URL.revokeObjectURL(a.href);
     } finally {
       setDownloading(false);
     }
-  }, [ogImageUrl]);
+  }, [ogImageUrl, format, theme]);
 
   const tweetText = encodeURIComponent(`I'm ${percentLived}% through my life. Find out yours:`);
-  const tweetUrl = encodeURIComponent(url);
-  const tweetHref = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
+  const tweetHref = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(url)}`;
+
+  const aspectClass = format === "story" ? "aspect-[9/16]" : "aspect-[1200/630]";
 
   return (
-    /* Backdrop */
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
       onClick={onClose}
     >
-      {/* Modal */}
       <div
-        className="bg-background rounded-2xl shadow-xl w-full max-w-lg overflow-hidden"
+        className="bg-background rounded-2xl shadow-xl w-full max-w-lg overflow-hidden max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -94,18 +99,55 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
           </button>
         </div>
 
-        {/* OG image preview */}
+        {/* Toggles */}
+        <div className="px-6 pb-4 flex gap-3">
+          {/* Format toggle */}
+          <div className="flex rounded-lg border border-border overflow-hidden text-sm flex-1">
+            {(["feed", "story"] as Format[]).map((f) => (
+              <button
+                key={f}
+                onClick={() => setFormat(f)}
+                className={`flex-1 py-2 capitalize transition-colors ${
+                  format === f
+                    ? "bg-foreground text-background"
+                    : "hover:bg-foreground/5"
+                }`}
+              >
+                {f === "feed" ? "Feed 1.91:1" : "Story 9:16"}
+              </button>
+            ))}
+          </div>
+          {/* Theme toggle */}
+          <div className="flex rounded-lg border border-border overflow-hidden text-sm">
+            {(["light", "dark"] as Theme[]).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTheme(t)}
+                className={`px-4 py-2 capitalize transition-colors ${
+                  theme === t
+                    ? "bg-foreground text-background"
+                    : "hover:bg-foreground/5"
+                }`}
+              >
+                {t === "light" ? "☀︎" : "☽"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Image preview */}
         <div className="px-6">
           {imgError ? (
-            <div className="w-full aspect-[1200/630] rounded-xl border border-border bg-muted/20 flex items-center justify-center text-sm text-muted">
+            <div className={`w-full ${aspectClass} rounded-xl border border-border bg-muted/20 flex items-center justify-center text-sm text-muted`}>
               Preview unavailable
             </div>
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img
+              key={ogImageUrl}
               src={ogImageUrl}
               alt="Your life calculator result"
-              className="w-full rounded-xl border border-border"
+              className={`w-full rounded-xl border border-border object-cover ${aspectClass}`}
               onError={() => setImgError(true)}
             />
           )}
@@ -113,18 +155,20 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
 
         {/* Actions */}
         <div className="p-6 space-y-3">
-          {/* X / Twitter */}
-          <a
-            href={tweetHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-foreground text-background rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-            </svg>
-            Share on X
-          </a>
+          {/* X / Twitter — feed only */}
+          {format === "feed" && (
+            <a
+              href={tweetHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-foreground text-background rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              Share on X
+            </a>
+          )}
 
           {/* Copy link */}
           <button
@@ -134,13 +178,13 @@ export function ShareModal({ url, percentLived, onClose }: ShareModalProps) {
             {copied ? "Copied!" : "Copy link"}
           </button>
 
-          {/* Download for Instagram */}
+          {/* Download */}
           <button
             onClick={handleDownload}
             disabled={downloading}
             className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-border rounded-lg text-sm hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
           >
-            {downloading ? "Downloading…" : "Download image"}
+            {downloading ? "Downloading…" : `Download image`}
           </button>
         </div>
       </div>
