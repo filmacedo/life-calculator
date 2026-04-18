@@ -59,9 +59,6 @@ export default function FilipePage() {
               Forty? Still Early.
             </a>
           </p>
-          <p className="text-muted leading-relaxed italic border-l-2 border-accent/30 pl-6">
-            {filipeCommentary.personalNote}
-          </p>
         </header>
 
         {/* The result */}
