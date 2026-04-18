@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { shareResults } from "@/lib/share";
+import { useState } from "react";
+import { ShareModal } from "./ShareModal";
 
 interface ShareButtonProps {
   url: string;
@@ -10,28 +10,24 @@ interface ShareButtonProps {
 }
 
 export function ShareButton({ url, percentLived, className }: ShareButtonProps) {
-  const [status, setStatus] = useState<"idle" | "copied" | "shared" | "failed">(
-    "idle"
-  );
-
-  const handleShare = useCallback(async () => {
-    const result = await shareResults(url, percentLived);
-    setStatus(result);
-    if (result === "copied") {
-      setTimeout(() => setStatus("idle"), 2000);
-    }
-  }, [url, percentLived]);
+  const [open, setOpen] = useState(false);
 
   return (
-    <button
-      onClick={handleShare}
-      className={className ?? "px-6 py-3 border border-foreground rounded-lg text-sm hover:bg-foreground hover:text-background transition-colors"}
-    >
-      {status === "copied"
-        ? "Link copied!"
-        : status === "shared"
-          ? "Shared!"
-          : "Share your results"}
-    </button>
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className={className ?? "px-6 py-3 border border-foreground rounded-lg text-sm hover:bg-foreground hover:text-background transition-colors"}
+      >
+        Share your results
+      </button>
+
+      {open && (
+        <ShareModal
+          url={url}
+          percentLived={percentLived}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </>
   );
 }
