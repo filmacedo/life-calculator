@@ -19,15 +19,9 @@ export async function shareResults(
   url: string,
   percentLived: number
 ): Promise<"copied" | "shared" | "failed"> {
-  const text = `I'm ~${percentLived}% through my life. Find out yours:`;
-  const fullText = `${text} ${url}`;
+  const fullText = `I'm ${percentLived}% through my life. Find out yours: ${url}`;
 
   try {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      await navigator.share({ title: "Life Calculator", text, url });
-      return "shared";
-    }
-
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       try {
         await navigator.clipboard.writeText(fullText);

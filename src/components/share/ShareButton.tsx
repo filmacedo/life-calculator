@@ -6,9 +6,10 @@ import { shareResults } from "@/lib/share";
 interface ShareButtonProps {
   url: string;
   percentLived: number;
+  className?: string;
 }
 
-export function ShareButton({ url, percentLived }: ShareButtonProps) {
+export function ShareButton({ url, percentLived, className }: ShareButtonProps) {
   const [status, setStatus] = useState<"idle" | "copied" | "shared" | "failed">(
     "idle"
   );
@@ -24,7 +25,7 @@ export function ShareButton({ url, percentLived }: ShareButtonProps) {
   return (
     <button
       onClick={handleShare}
-      className="px-6 py-3 border border-foreground rounded-lg text-sm hover:bg-foreground hover:text-background transition-colors"
+      className={className ?? "px-6 py-3 border border-foreground rounded-lg text-sm hover:bg-foreground hover:text-background transition-colors"}
     >
       {status === "copied"
         ? "Link copied!"

@@ -98,13 +98,17 @@ export default function FilipePage() {
 
         {/* Share + CTA */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <ShareButton url={shareUrl} percentLived={result.percentLived} />
           <a
             href="/life-calculator"
-            className="px-8 py-3 border border-foreground rounded-lg text-base hover:bg-foreground hover:text-background transition-colors"
+            className="px-8 py-3 bg-foreground text-background rounded-lg text-base hover:opacity-90 transition-opacity"
           >
             Try it yourself
           </a>
+          <ShareButton
+            url={shareUrl}
+            percentLived={result.percentLived}
+            className="px-8 py-3 border border-foreground rounded-lg text-base hover:bg-foreground hover:text-background transition-colors"
+          />
         </div>
 
         {/* What the math says */}
