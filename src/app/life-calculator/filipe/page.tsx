@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { filipeAnswers, filipeCommentary } from "@/lib/filipe-data";
 import { calculate } from "@/lib/calculator";
+import { encodeAnswers } from "@/lib/permalink";
 import { Container } from "@/components/ui/Container";
+import { ShareButton } from "@/components/share/ShareButton";
 
 export const metadata: Metadata = {
   title: "Filipe's Life Calculator",
@@ -31,11 +33,13 @@ export default function FilipePage() {
   const age = getFilipeAge();
   const answers = { ...filipeAnswers, age };
   const result = calculate(answers);
+  const encoded = encodeAnswers(answers);
+  const shareUrl = `https://www.macedo.app/life-calculator?s=${encoded}`;
 
   return (
     <Container>
       <article className="py-16 space-y-12">
-        {/* Intro + personal note merged */}
+        {/* Intro */}
         <header className="space-y-6">
           <h1 className="text-3xl md:text-4xl font-serif">
             Filipe&apos;s Life Calculator
@@ -45,6 +49,15 @@ export default function FilipePage() {
           </p>
           <p className="text-muted leading-relaxed">
             {filipeCommentary.whyIBuiltThis}
+          </p>
+          <p className="text-muted leading-relaxed">
+            The essay that started it:{" "}
+            <a
+              href="#"
+              className="italic underline hover:text-foreground"
+            >
+              Forty? Still Early.
+            </a>
           </p>
           <p className="text-muted leading-relaxed italic border-l-2 border-accent/30 pl-6">
             {filipeCommentary.personalNote}
@@ -86,11 +99,12 @@ export default function FilipePage() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center">
+        {/* Share + CTA */}
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <ShareButton url={shareUrl} percentLived={result.percentLived} />
           <a
             href="/life-calculator"
-            className="inline-block px-8 py-3 bg-foreground text-background rounded-lg text-base hover:opacity-90 transition-opacity"
+            className="px-8 py-3 border border-foreground rounded-lg text-base hover:bg-foreground hover:text-background transition-colors"
           >
             Try it yourself
           </a>

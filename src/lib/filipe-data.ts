@@ -20,10 +20,10 @@ export const filipeAnswers: UserAnswers = {
 };
 
 export const filipeCommentary = {
-  bio: "I'm Filipe Macedo, a Portuguese founder and builder. I spend most of my time at Talent Protocol, thinking about reputation, identity, and what makes people trustworthy on the internet.",
+  bio: "I'm Filipe Macedo. I build things, write a bit, and split my time between Lisbon and NYC.",
 
   whyIBuiltThis:
-    "I'm about to turn 40. The question that kept nagging me wasn't \"am I healthy enough?\" — it was simpler than that: am I past the halfway point of my life? I couldn't shake the question, so I built a calculator to answer it. Turns out the answer depends on a lot more than just age and country.",
+    "I'm turning 40 this year, and a question kept nagging at me: am I past the halfway point of my life? I couldn't shake it, so I built this calculator to answer it.",
 
   headline:
     "Not quite halfway. I have roughly as much life ahead of me as I've already lived.",

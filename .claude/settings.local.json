@@ -19,7 +19,11 @@
       "Bash(curl -s http://localhost:3000/life-calculator/methodology)",
       "Bash(node *)",
       "Bash(npx tsx *)",
-      "Bash(git init *)"
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(npm i *)",
+      "WebSearch"
     ]
   }
 }
