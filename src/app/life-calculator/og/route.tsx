@@ -101,9 +101,22 @@ export async function GET(request: NextRequest) {
             LIFE COMPLETED
           </div>
         )}
-        <div style={{ fontSize: hasData ? bigFont : 72, color: fg, lineHeight: 1, fontFamily: "Instrument Serif, Georgia, serif" }}>
+        <div style={{ fontSize: hasData ? bigFont : 96, color: fg, lineHeight: 1, fontFamily: "Instrument Serif, Georgia, serif" }}>
           {hasData ? `${percent}%` : "How Much Life Left?"}
         </div>
+        {!hasData && (
+          <div
+            style={{
+              marginTop: story ? 56 : 36,
+              fontSize: story ? 36 : 28,
+              color: muted,
+              fontFamily: "Instrument Sans, system-ui, sans-serif",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Calculate yours in 30 seconds →
+          </div>
+        )}
         {hasData && (
           <div style={{ display: "flex", width: barW, height: story ? 14 : 10, marginTop: story ? 80 : 52, backgroundColor: barBg, borderRadius: 7 }}>
             <div style={{ width: `${percent}%`, height: "100%", backgroundColor: fg, borderRadius: 7 }} />
