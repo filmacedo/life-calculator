@@ -16,6 +16,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.macedo.app"),
   title: "How Much Life Left? Your Life in Months, Weekends, Meals",
   description:
     "A playful, honest estimate of the years still ahead of you — based on your age, habits, and country.",
