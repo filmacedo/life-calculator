@@ -9,6 +9,12 @@ export function ViralStats({ weekendsLeft, booksLeft, mealsLeft }: ViralStatsPro
     <div className="grid grid-cols-3 gap-3">
       <div className="text-center p-4 border border-border rounded-xl">
         <p className="text-2xl md:text-3xl font-serif">
+          ~{mealsLeft.toLocaleString()}
+        </p>
+        <p className="text-xs text-muted mt-1">meals left</p>
+      </div>
+      <div className="text-center p-4 border border-border rounded-xl">
+        <p className="text-2xl md:text-3xl font-serif">
           ~{weekendsLeft.toLocaleString()}
         </p>
         <p className="text-xs text-muted mt-1">weekends left</p>
@@ -16,12 +22,6 @@ export function ViralStats({ weekendsLeft, booksLeft, mealsLeft }: ViralStatsPro
       <div className="text-center p-4 border border-border rounded-xl">
         <p className="text-2xl md:text-3xl font-serif">~{booksLeft}</p>
         <p className="text-xs text-muted mt-1">books left to read</p>
-      </div>
-      <div className="text-center p-4 border border-border rounded-xl">
-        <p className="text-2xl md:text-3xl font-serif">
-          ~{mealsLeft.toLocaleString()}
-        </p>
-        <p className="text-xs text-muted mt-1">meals left</p>
       </div>
     </div>
   );

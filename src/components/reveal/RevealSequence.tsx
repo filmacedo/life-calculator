@@ -5,7 +5,6 @@ import { CalculatorResult } from "@/lib/types";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { StickyResultsBanner } from "@/components/ui/StickyResultsBanner";
 import { BigPercentage } from "./BigPercentage";
-import { YearsLeftSubtitle } from "./YearsLeftSubtitle";
 import { MonthsGrid } from "./MonthsGrid";
 import { StagesBar } from "./StagesBar";
 import { BiggestLever } from "./BiggestLever";
@@ -48,10 +47,6 @@ export function RevealSequence({ result, age, onPlay, shareUrl }: RevealSequence
             percent={result.percentLived}
             expected={result.expected}
           />
-        </FadeIn>
-
-        <FadeIn delay={0.4}>
-          <YearsLeftSubtitle yearsLeft={result.yearsLeft} age={age} />
         </FadeIn>
       </div>
 
