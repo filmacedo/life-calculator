@@ -10,31 +10,38 @@ interface BigPercentageProps {
 }
 
 export function BigPercentage({ percent, expected, animated = true }: BigPercentageProps) {
-  const count = useMotionValue(animated ? 0 : percent);
-  const display = useTransform(count, (v) => `${Math.round(v)}%`);
+  const percentCount = useMotionValue(animated ? 0 : percent);
+  const expectedCount = useMotionValue(animated ? 0 : expected);
+  const percentDisplay = useTransform(percentCount, (v) => `${Math.round(v)}%`);
+  const expectedDisplay = useTransform(expectedCount, (v) => `${Math.round(v)}`);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
     if (animated && !hasAnimated.current) {
       hasAnimated.current = true;
-      animate(count, percent, {
-        duration: 1.8,
-        ease: [0.22, 1, 0.36, 1],
-      });
+      const ease = [0.22, 1, 0.36, 1] as const;
+      animate(expectedCount, expected, { duration: 1.6, ease });
+      animate(percentCount, percent, { duration: 1.8, ease });
     } else if (!animated) {
-      count.set(percent);
+      percentCount.set(percent);
+      expectedCount.set(expected);
     }
-  }, [percent, animated, count]);
+  }, [percent, expected, animated, percentCount, expectedCount]);
 
   return (
-    <div className="grid grid-cols-2 gap-6">
-      <div>
-        <p className="text-5xl md:text-6xl font-serif">{Math.round(expected)}</p>
-        <p className="text-sm text-muted mt-1">years expected</p>
+    <div className="flex items-center justify-center gap-10 md:gap-20">
+      <div className="text-center">
+        <motion.p className="text-7xl md:text-9xl font-serif leading-[0.9] tabular-nums">
+          {expectedDisplay}
+        </motion.p>
+        <p className="text-xs md:text-sm text-muted mt-4 tracking-wide">expected lifespan</p>
       </div>
-      <div>
-        <motion.p className="text-5xl md:text-6xl font-serif">{display}</motion.p>
-        <p className="text-sm text-muted mt-1">life completed</p>
+      <div className="h-16 md:h-24 w-px bg-border self-center" aria-hidden />
+      <div className="text-center">
+        <motion.p className="text-7xl md:text-9xl font-serif leading-[0.9] tabular-nums">
+          {percentDisplay}
+        </motion.p>
+        <p className="text-xs md:text-sm text-muted mt-4 tracking-wide">life completed</p>
       </div>
     </div>
   );

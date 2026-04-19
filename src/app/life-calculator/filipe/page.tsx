@@ -6,9 +6,16 @@ import { Container } from "@/components/ui/Container";
 import { ShareButton } from "@/components/share/ShareButton";
 
 export const metadata: Metadata = {
-  title: "Filipe's Life Calculator",
+  title: "Filipe's Life Calculator — What It Told Me at 40",
   description:
-    "I built a life calculator for my 40th. Here's what it told me.",
+    "I built a life calculator for my 40th birthday. Here's what it told me — months ahead, biggest levers, and what I'd change.",
+  openGraph: {
+    images: ["/life-calculator/og?theme=dark"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/life-calculator/og?theme=dark"],
+  },
 };
 
 export const dynamic = "force-dynamic";

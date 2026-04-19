@@ -6,7 +6,7 @@ interface YearsLeftSubtitleProps {
 export function YearsLeftSubtitle({ yearsLeft, age }: YearsLeftSubtitleProps) {
   return (
     <p className="text-center text-lg text-muted">
-      {Math.round(age)} years behind you, ~{Math.round(yearsLeft)} ahead
+      {Math.round(age)} years behind you, {Math.round(yearsLeft)} years ahead
     </p>
   );
 }
